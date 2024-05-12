@@ -1,51 +1,49 @@
-import posts from "./database";
 import { randomUUID } from "crypto";
+import Post, { IPost } from "./model";
+import { HydratedDocument } from "mongoose";
 
-type Post = {
-  id: string;
-  title: string;
+// type IPost = {
+//   id: string;
+//   title: string;
+// };
+
+const getPost = async (args: { id: string }): Promise<IPost | null> => {
+  console.log("getPost:", args.id);
+  const post: IPost | null = await Post.findById(args.id);
+  return post;
 };
 
-const getPost = (args: { id: string }): Post | undefined => {
-  return posts.find((post: Post) => post.id === args.id);
-};
-
-const getPosts = (): Post[] => {
+const getPosts = async (): Promise<IPost[]> => {
+  const posts: Array<IPost> = await Post.find();
   return posts;
 };
 
-const createPost = (args: { title: string }): Post => {
-  // generate randon uuid for pet object
-  const generatedId = randomUUID().toString();
-  // create pet object and save
-  const post = { id: generatedId, ...args };
-  posts.push(post);
+const createPost = async (args: { title: string }): Promise<IPost> => {
+  const post: IPost = await Post.create({
+    title: args.title,
+  });
   return post;
 };
 
-const updatePost = (args: { id: string; title?: string }): Post => {
-  // loop through pets array and get object of pet
-  const index = posts.findIndex((post: Post) => post.id === args.id);
-  const post = posts[index];
+// const updatePost = (args: { id: string; title?: string }): IPost => {
+//   // loop through pets array and get object of pet
+//   const index = IPosts.findIndex((post: IPost) => IPost.id === args.id);
+//   const IPost = IPosts[index];
 
-  // update field if it is passed as an argument
-  if (args.title) post.title = args.title;
-  return post;
-};
+//   // update field if it is passed as an argument
+//   if (args.title) IPost.title = args.title;
+//   return IPost;
+// };
 
-const deletePost = (args: { id: string }): string => {
-  const index = posts.findIndex((post: Post) => post.id === args.id);
-  if (index !== -1) {
-    posts.splice(index, 1);
-  }
-
-  return args.id;
+const deletePost = async (args: { id: string }): Promise<number> => {
+  const post = await Post.deleteOne({ _id: args.id });
+  return post.deletedCount;
 };
 
 export const root = {
   getPost,
   getPosts,
   createPost,
-  updatePost,
+  //updatePost,
   deletePost,
 };
