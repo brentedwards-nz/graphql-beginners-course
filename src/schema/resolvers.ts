@@ -46,10 +46,26 @@ const deletePost = async (args: { id: string }): Promise<number> => {
 const createMember = async (args: {
   first_name: string;
   second_name: string;
+  preferred_name: string;
+  phone_1: string;
+  phone_2: string;
+  email_1: string;
+  email_2: string;
+  address_1: string;
+  address_2: string;
+  address_3: string;
 }): Promise<IMember> => {
   const post: IMember = await Member.create({
     first_name: args.first_name,
     second_name: args.second_name,
+    preferred_name: args.preferred_name,
+    phone_1: args.phone_1,
+    phone_2: args.phone_2,
+    email_1: args.email_1,
+    email_2: args.email_2,
+    address_1: args.address_1,
+    address_2: args.address_2,
+    address_3: args.address_3,
   });
   return post;
 };

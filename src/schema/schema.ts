@@ -34,7 +34,11 @@ const schema = buildSchema(`
     createPost(title: String!): Post!
     updatePost(id: ID!, title: String): Post!
     deletePost(id: ID!): Int!
-    createMember(first_name: String!, second_name: String!): Member!
+    createMember(
+      first_name: String!, 
+      second_name: String!
+      preferred_name: String
+    ): Member!
   }  
 `);
 
