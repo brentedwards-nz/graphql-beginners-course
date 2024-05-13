@@ -75,12 +75,30 @@ const getMembers = async (): Promise<IMember[]> => {
   return posts;
 };
 
+const registerMember = async (args: {
+  email: string;
+  password: string;
+  first_name: string;
+  second_name: string;
+  preferred_name: string;
+}): Promise<IMember> => {
+  const member: IMember = await Member.create({
+    email: args.email,
+    password: args.password,
+    first_name: args.first_name,
+    second_name: args.second_name,
+    preferred_name: args.preferred_name,
+  });
+  return member;
+};
+
 export const root = {
   getPost,
   getPosts,
   createPost,
   updatePost,
   deletePost,
+  registerMember,
   createMember,
   getMembers,
 };

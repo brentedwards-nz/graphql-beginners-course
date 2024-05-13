@@ -13,6 +13,8 @@ export interface IMember {
   address_2: string;
   address_3: string;
   dob: Date;
+  profile_picture: string;
+  hashed_password: string;
 }
 
 interface IMemberMethods {
@@ -30,12 +32,14 @@ const MemberSchema = new Schema<IMember, IMemberModel>(
     preferred_name: { type: String, required: false },
     phone_1: { type: String, required: false },
     phone_2: { type: String, required: false },
-    email_1: { type: String, required: false, unique: false },
+    email_1: { type: String, required: true, unique: true },
     email_2: { type: String, required: false, unique: false },
     address_1: { type: String, required: false, unique: false },
     address_2: { type: String, required: false, unique: false },
     address_3: { type: String, required: false, unique: false },
     dob: { type: Date, required: false, unique: false },
+    profile_picture: { type: String, required: false, unique: false },
+    hashed_password: { type: String, required: true, unique: false },
   },
   {
     statics: {
