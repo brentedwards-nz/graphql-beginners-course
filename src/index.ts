@@ -2,9 +2,9 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import { graphqlHTTP } from "express-graphql";
-import schema from "./schema/schema";
-import { root } from "./schema/resolvers";
+import schema from "./schema/schema"
 import authMiddleware from "./auth";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -28,17 +28,22 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 const loggingMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  //console.log("*** loggingMiddleware");
   next();
 };
+
+app.use(express.json());
+
 app.use(loggingMiddleware);
 
 app.use(authMiddleware);
+
+app.use("/api/auth", authRoutes);
 
 app.use(
   "/graphql",
   graphqlHTTP({
     schema: schema,
-    rootValue: root,
     graphiql: { headerEditorEnabled: true },
   })
 );

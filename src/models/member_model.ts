@@ -1,5 +1,7 @@
 import mongoose, { Schema, HydratedDocument, Model } from "mongoose";
 
+import {IClub} from "./club_model";
+
 export interface IMember {
   id: string;
   first_name: string;
@@ -15,6 +17,7 @@ export interface IMember {
   dob: Date;
   profile_picture: string;
   hashed_password: string;
+  clubs: IClub[]
 }
 
 interface IMemberMethods {
@@ -40,6 +43,12 @@ const MemberSchema = new Schema<IMember, IMemberModel>(
     dob: { type: Date, required: false, unique: false },
     profile_picture: { type: String, required: false, unique: false },
     hashed_password: { type: String, required: true, unique: false },
+    clubs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Club"
+      }
+    ]
   },
   {
     statics: {
