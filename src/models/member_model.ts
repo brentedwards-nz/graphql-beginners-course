@@ -1,5 +1,4 @@
 import mongoose, { Schema, HydratedDocument, Model } from "mongoose";
-
 import {IClub} from "./club_model";
 
 export interface IMember {
@@ -65,16 +64,5 @@ const MemberSchema = new Schema<IMember, IMemberModel>(
   }
 );
 
-// static method
-// MemberSchema.statics.findAllPosts = function () {
-//   return this.find();
-// };
-
-// instance method
-// MemberSchema.method("fullName", function fullName() {
-//   return this.first_name + " " + this.second_name;
-// });
-
-// exporting the schema and model
 const Member = mongoose.model<IMember, IMemberModel>("Member", MemberSchema);
 export default Member;

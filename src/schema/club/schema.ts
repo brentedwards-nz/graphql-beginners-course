@@ -36,7 +36,7 @@ const club_mutations = `
     location_picture: String
   ): Club
   deleteClub(club_id: ID!): Int!
-  addMember(club_id: ID!, member_id: ID!): Club
+  addMemberToClub(club_id: ID!, member_id: ID!): Club
 `;
 
 export { club_types, club_queries, club_mutations };

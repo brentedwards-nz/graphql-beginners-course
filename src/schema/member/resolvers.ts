@@ -1,4 +1,5 @@
 import Member, { IMember } from  "../../models/member_model"
+import Club from "../../models/club_model";
 
 export const mutations = {
   createMember: async (_: IMember, args: {
@@ -20,18 +21,35 @@ export const mutations = {
   deleteMember: async (_: IMember, args: { id: string }): Promise<number> => {
     const post = await Member.deleteOne({ _id: args.id });
     return post.deletedCount;
-  }
+  },
+  addClubToMember: async (_: IMember, args: { member_id: string, club_id: string }): Promise<IMember | null> => {
+    const clubResult = await Club.findByIdAndUpdate(
+      args.club_id,
+      { $push: { members: args.member_id } },
+      { new: true, useFindAndModify: false }
+    );
+
+    if(!clubResult) {
+      return null;  
+    }
+    
+    const memberResult = await Member.findByIdAndUpdate(
+      args.member_id,
+      { $push: { clubs: args.club_id } },
+      { new: true, useFindAndModify: false }
+    );
+    return memberResult;
+  },
 };
 
 export const queries = {
   member: async (_: IMember, args: { id: string }): Promise<IMember | null> => {
     console.log("*** member", args.id)
-    const member: IMember | null = await Member.findById(args.id);
+    const member: IMember | null = await Member.findById(args.id).populate('clubs');
     return member;
   },
   members: async (): Promise<IMember[]> => {
-    console.log("*** members")
-    const members: Array<IMember> = await Member.find();
+    const members: Array<IMember> = await Member.find().populate('clubs');
     return members;
   },
 };

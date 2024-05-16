@@ -12,6 +12,7 @@ const MemberFields = `
   profile_picture: String
   hashed_password: String!
   #dob: Date!
+  clubs: [Club]
 `;
 
 const member_types = `
@@ -35,6 +36,7 @@ const member_mutations = `
     preferred_name: String
   ): Member
   deleteMember(id: ID!): Int!
+  addClubToMember(member_id: ID!, club_id: ID!): Int!
 `;
 
 export { member_types, member_queries, member_mutations };

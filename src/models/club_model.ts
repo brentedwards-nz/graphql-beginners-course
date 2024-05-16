@@ -55,6 +55,5 @@ const ClubSchema = new Schema<IClub, IClubModel>(
   }
 );
 
-// exporting the schema and model
 const Club = mongoose.model<IClub, IClubModel>("Club", ClubSchema);
 export default Club;

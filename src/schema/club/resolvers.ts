@@ -1,4 +1,5 @@
 import Club, { IClub } from  "../../models/club_model"
+import Member from "../../models/member_model";
 
 export const mutations = {
   createClub: async (_: IClub, args: { 
@@ -31,16 +32,23 @@ export const mutations = {
     return result.deletedCount;
   },
   // Add member --------------------------------------------------------------------------------------
-  addMember: async (_: IClub, args: { club_id: string, member_id: string }): Promise<IClub | null> => {
-    console.log("***   club id:", args.club_id);
-    console.log("*** member id:", args.member_id);
-    
-    const result = await Club.findByIdAndUpdate(
+  addMemberToClub: async (_: IClub, args: { club_id: string, member_id: string }): Promise<IClub | null> => {
+    const memberResult = await Member.findByIdAndUpdate(
+      args.member_id,
+      { $push: { clubs: args.club_id } },
+      { new: true, useFindAndModify: false }
+    );
+
+    if(!memberResult) {
+      return null;  
+    }
+
+    const clubResult = await Club.findByIdAndUpdate(
       args.club_id,
       { $push: { members: args.member_id } },
       { new: true, useFindAndModify: false }
     );
-    return result;
+    return clubResult;
   }, 
 };
 
@@ -50,7 +58,7 @@ export const queries = {
     return club;
   },
   clubs: async (): Promise<IClub[]> => {
-    const clubs: Array<IClub> = await Club.find();
+    const clubs: Array<IClub> = await Club.find().populate('members');
     return clubs;
   },
 };
