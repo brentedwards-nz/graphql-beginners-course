@@ -2,11 +2,20 @@ import { Request, Response, NextFunction } from "express";
 import Member from "./models/member_model";
 
 const authMiddleware = async (
-  req: Request,
+  req: any,
   res: Response,
   next: NextFunction
 ) => {
-  //console.log("*** authMiddleware")
+  const token = req.headers.authorization;
+
+  req.user = { 
+    _id: "ABCDEFGHIJKLM",
+    roles: [
+      'User', 'Admin'
+    ]
+  }
+  req.token = token;
+
   next();
 
   // const token = req.headers.authorization;

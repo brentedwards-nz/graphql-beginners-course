@@ -1,8 +1,8 @@
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express, NextFunction } from "express";
 import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import { graphqlHTTP } from "express-graphql";
-import schema from "./schema/schema"
+import schema from "./schema/schema";
 import authMiddleware from "./auth";
 import authRoutes from "./routes/authRoutes";
 
@@ -23,12 +23,11 @@ mongoose
     console.log("Error:", err);
   });
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to my GraphQL app");
+app.get("/", (req, res) => {
+  res.redirect('/graphql');
 });
 
-const loggingMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  //console.log("*** loggingMiddleware");
+const loggingMiddleware = (_: any, __: any, next: NextFunction) => {
   next();
 };
 
@@ -36,17 +35,21 @@ app.use(express.json());
 
 app.use(loggingMiddleware);
 
-app.use(authMiddleware);
-
 app.use("/api/auth", authRoutes);
-
-app.use(
-  "/graphql",
-  graphqlHTTP({
+const graphqlHTTPMiddleWare = graphqlHTTP(
+  async (request: any, response, graphQLParams) => ({
     schema: schema,
+    context: {
+      token: request?.token,
+      user: request?.user,
+    },
     graphiql: { headerEditorEnabled: true },
   })
 );
+
+app.use(authMiddleware);
+
+app.use("/graphql", graphqlHTTPMiddleWare);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
